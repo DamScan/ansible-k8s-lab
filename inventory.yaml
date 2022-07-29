@@ -1,24 +1,11 @@
 all:
-  hosts:
-    debian1:
-      ansible_user: dams
-    debian2:
-      ansible_user: dams
-    debian3:
-      ansible_user: dams
-    debian4:
-      ansible_user: dams
+  children:
+    master:
+      hosts:
+        debian1:
+          ansible_user: dams
 
-master:
-  hosts:
-    debian1:
-      ansible_user: dams
-
-slave:
-  hosts:
-    debian2:
-      ansible_user: dams
-    debian3:
-      ansible_user: dams
-    debian4:
-      ansible_user: dams
+    slave:
+      hosts:
+        debian[2:4]:
+          ansible_user: dams
