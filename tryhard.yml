@@ -1,0 +1,42 @@
+---
+
+- name: "Generate html file for each host"
+  hosts: all
+  gather_facts: yes
+  vars:
+    host_inventory: "localhost"
+    inventory_dir:  "./inventory"
+    wim_vm_user: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          61333366313965343561383964353466376636636638356161393431663038373730626534336333
+          3836383437643532353436633636343561663735633733330a633637623536646364363663336365
+          38643864643834353163653934643539323064373134383139373534663034303731633134383831
+          3562613931366162620a626632343862353063633463366566633634336336306237643465333865
+          6465
+
+    win_vm_pass: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          31653461613564636430383665653139326465336330346236393937356639353336363336323131
+          3162646634656561336638333333623436363639383563630a636263373266306565616363376532
+          65306333666432623663353537356133666464303034666163356530656537363631323738623632
+          3130356465653731370a343031323838313561366364323830376430396163316136313633343564
+          6636
+
+  tasks:
+    # Delegate both instructions on central machine
+    - delegate_to: "{{host_inventory}}"
+      block:
+        - name: "Create template directory"
+          file:
+            path: "{{inventory_dir}}"
+            owner: '{{ lookup("env", "USER") }}'
+            group: '{{ lookup("env", "USER") }}'
+            mode: "0755"
+            state: "directory"
+          # As we only have one central machine,
+          # run only one time this task
+          run_once: yes
+        - name: "html file generation"
+          template:
+            src: "machine.html.j2"
+            dest: "{{inventory_dir}}/{{inventory_hostname}}.html"

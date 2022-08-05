@@ -2,10 +2,19 @@ all:
   children:
     master:
       hosts:
-        debian1:
-          ansible_user: dams
+        node1:
+          ansible_user: it
 
     slave:
       hosts:
-        debian[2:4]:
-          ansible_user: dams
+        node[2:4]:
+          ansible_user: it
+
+    win:
+      hosts:
+        yourcegid.jmauto.local:
+          ansible_user: "{{ wim_vm_user }}"
+          ansible_password: "{{ win_vm_pass }}"
+          ansible_connection: winrm
+          ansible_winrm_server_cert_validation: ignore
+          ansible_winrm_transport: ntlm

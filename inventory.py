@@ -5,6 +5,7 @@ import sys
 import argparse
 import json
 
+# Work in progress
 class Inventory(object):
 
     def __init__(self):
